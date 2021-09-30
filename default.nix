@@ -25,6 +25,6 @@ dockerTools.buildLayeredImage {
     # Needs to be '/' because otherwise the JVM gets confused about java.home being empty
     # and looking for the modules in `lib/modules`
     WorkingDir = "/";
-    Entrypoint = [ "java" "-jar" ./target/scala-2.13/my-akkaserverless-project-assembly-0.0.0-3-ea858fee-20210930-1403.jar ];
+    Entrypoint = [ "java" "-jar" ./assembly.jar ];
   };
 }
