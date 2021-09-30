@@ -19,13 +19,21 @@ dockerTools.buildImage {
     # python, gtk, two versions of icu4c, /lib/modules
     (jre_minimal.override {
       jdk = jdk11_headless;
+      modules = [
+        # For reading the logback config
+        "java.xml"
+        # For slf4j
+        "java.naming"
+        # For sun.misc.Unsafe
+        "jdk.unsupported"
+        # For AkkaServerlessRunner.logJvmInfo
+        "java.management"
+      ];
     })
     # for chmod in sbt-native-packager
     coreutils
     # for addgroup in sbt-native-packager
     busybox
-    # for getet in sbt-native-packager
-    glibc
     # for bash in the sbt-native-packager start script
     bash
   ];
