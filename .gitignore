@@ -1,0 +1,6 @@
+/project/target/
+/target/
+# All generated
+/src/main/scala
+# nix
+/result

@@ -2,21 +2,10 @@
 
 with pkgs;
 
-dockerTools.buildImage {
-  name = "nix-jre";
+dockerTools.buildLayeredImage {
+  name = "my-akkaserverless-project";
   tag = "latest";
-  runAsRoot = ''
-    # to make the child image find the root user
-    ${dockerTools.shadowSetup}
-    # so sbt-native-packager can create a homedir
-    #mkdir /home
-    # so sbt-native-packager can find them
-    mkdir -p /usr/bin
-    ln -s /sbin/env /usr/bin/env
-  '';
   contents = [
-    # Not so minimal:
-    # python, gtk, two versions of icu4c, /lib/modules
     (jre_minimal.override {
       jdk = jdk11_headless;
       modules = [
@@ -30,11 +19,12 @@ dockerTools.buildImage {
         "java.management"
       ];
     })
-    # for chmod in sbt-native-packager
-    coreutils
-    # for addgroup in sbt-native-packager
-    busybox
-    # for bash in the sbt-native-packager start script
-    bash
   ];
+  config = {
+    Cmd = [];
+    # Needs to be '/' because otherwise the JVM gets confused about java.home being empty
+    # and looking for the modules in `lib/modules`
+    WorkingDir = "/";
+    Entrypoint = [ "java" "-jar" ./target/scala-2.13/my-akkaserverless-project-assembly-0.0.0-3-ea858fee-20210930-1403.jar ];
+  };
 }
